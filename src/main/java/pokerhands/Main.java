@@ -2,14 +2,19 @@ package pokerhands;
 
 import lombok.SneakyThrows;
 import org.javatuples.Pair;
-import pokerhands.handgenerator.*;
-import pokerhands.handgenerator.CardUtils.Hand;
+import pokerhands.handgenerator.utils.CardUtils;
+import pokerhands.handgenerator.utils.CardUtils.Hand;
+import pokerhands.handgenerator.cards.Card;
+import pokerhands.handgenerator.cards.Deck;
+import pokerhands.handgenerator.cards.Rank;
+import pokerhands.handgenerator.cards.Suit;
+import pokerhands.handgenerator.utils.HandComparator;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
 
-import static pokerhands.handgenerator.CardUtils.Hand.*;
+import static pokerhands.handgenerator.utils.CardUtils.Hand.*;
 
 public class Main {
 
@@ -18,6 +23,8 @@ public class Main {
     public static void main(String[] args) {
 
 //        randomHand();
+
+        CardUtils.numbersNotWords = true;
 
         terminalHand();
 
