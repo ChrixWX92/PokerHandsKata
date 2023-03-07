@@ -348,6 +348,12 @@ public class CardUtils {
         return hand.stream().sorted(Comparator.reverseOrder()).limit(number).collect(Collectors.toList());
     }
 
+    private static String rankNameToNumber(Rank rank) {
+        if (rank.value < 9) {return Character.toString(rank.character);}
+        else if (rank == TEN) return "10";
+        else return rank.name;
+    }
+    
     public enum Hand {
         FIVE_OF_A_KIND(11, "Five of a kind"),
         ROYAL_FLUSH(10, "Royal flush"),
