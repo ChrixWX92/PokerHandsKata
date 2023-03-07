@@ -29,11 +29,11 @@ public class CardUtils {
         return entries;
     }
 
-    public static Pair<Hand, List<Card>> handCalculator(List<Card> hand) {
+    public static Hand handCalculator(List<Card> hand) {
         return handCalculator(new Card[]{hand.get(0), hand.get(1)}, List.of(hand.get(2), hand.get(3), hand.get(4)));
     }
 
-    public static Pair<Hand, List<Card>> handCalculator(Card[] holdCards, List<Card> board) {
+    public static Hand handCalculator(Card[] holdCards, List<Card> board) {
 
         List<Card> hand = new ArrayList<>(board);
         hand.addAll(Arrays.asList(holdCards));
@@ -41,7 +41,7 @@ public class CardUtils {
         List<Card> bestCards;
         List<Card> remainder = new ArrayList<>();
 
-        /* In Texas hold 'em, the full house check must done before checking for straights and flushes, as none of the
+        /* The full house check must done before checking for straights and flushes, as none of the
         aforementioned can coexist for the same hand. If quads or a full house is found, we return, otherwise we check for a
         straight, and then a flush, before awarding anything lower.
         */
@@ -58,7 +58,7 @@ public class CardUtils {
                 Card kicker = board.stream().filter(o -> o.rank != pairHand.getValue1()).max(Comparator.naturalOrder()).orElse(null);
                 bestCards.add(kicker);
                 if (kicker != null) {
-                    return new Pair<>(kicker.rank == JOKER ? FIVE_OF_A_KIND : FOUR_OF_A_KIND, bestCards);
+                    return kicker.rank == JOKER ? FIVE_OF_A_KIND : FOUR_OF_A_KIND;
                 }
             }
             // Handling any other duplicate rank scenarios
@@ -67,17 +67,11 @@ public class CardUtils {
                 remainder = hand.stream().filter(o -> o.rank != pairHand.getValue1()).collect(Collectors.toList());
                 // Now checking the remainder for any further duplicates
                 Pair<Hand, Rank> remainingHand = getMostOfSameRank(remainder);
-                if (remainingHand == null) {
-//                    System.out.println("null");
-                } else {
-//                    System.out.println("remaining hand = " + remainingHand.getKey().name);
-                }
                 if (remainingHand != null && remainingHand.getValue0() == ONE_PAIR) {
                     // This covers a full house
                     if (pairHand.getValue0() == THREE_OF_A_KIND) {
                         bestCards.addAll(board.stream().filter(o -> o.rank == remainingHand.getValue1()).collect(Collectors.toList()));
-                        //TODO: Full house not recognised sometimes.
-                        return new Pair<>(FULL_HOUSE, bestCards);
+                        return FULL_HOUSE;
                     }
                     // Two pair here
                     else {
@@ -85,20 +79,19 @@ public class CardUtils {
                         Card kicker = secondRemainder.stream().filter(o -> o.rank != remainingHand.getValue1()).max(Comparator.naturalOrder()).orElse(null);
                         bestCards.addAll(board.stream().filter(o -> o.rank == remainingHand.getValue1()).collect(Collectors.toList()));
                         bestCards.add(kicker);
-                        //TODO: Two pair not recognised often, probably due to the same thing as above.
-                        return new Pair<>(TWO_PAIR, bestCards);
+                        return TWO_PAIR;
                     }
                 }
-                // If the remaining cards aren't duplicated, we can only assume trips TODO: CAN WE?
+                // If the remaining cards aren't duplicated, we can only assume trips
                 else {
                     if (pairHand.getValue0() == THREE_OF_A_KIND) {
                         bestCards.addAll(getTopCards(remainder, 2));
-                        return new Pair<>(THREE_OF_A_KIND, bestCards);
+                        return THREE_OF_A_KIND;
                     }
                 }
             }
 
-            // Anything other scenarios below
+            // Any other scenarios below
 
             List<Card> straightCards = getStraight(hand);
             List<Card> suitedCards;
@@ -108,22 +101,21 @@ public class CardUtils {
                 if (suitedCards.size() > 4) {
                     if (straightCards != null && straightCards.containsAll(suitedCards)) {
                         if (Collections.max(straightCards).rank == ACE) {
-                            return new Pair<>(ROYAL_FLUSH, getTopCards(straightCards, 5));
+                            return ROYAL_FLUSH;
                         } else {
-                            return new Pair<>(STRAIGHT_FLUSH, getTopCards(straightCards, 5));
+                            return STRAIGHT_FLUSH;
                         }
                     } else {
-                        return new Pair<>(FLUSH, getTopCards(suitedCards, 5));
+                        return FLUSH;
                     }
                 }
             }
             if (straightCards != null && straightCards.size() > 4) {
-                //TODO: Unknown false positives on this.
-                return new Pair<>(STRAIGHT, getTopCards(straightCards, 5));
+                return STRAIGHT;
             }
             else {
                 bestCards.addAll(getTopCards(remainder, 3));
-                return new Pair<>(ONE_PAIR, bestCards);
+                return ONE_PAIR;
             }
         } else {
             // TODO: The below straight and flush logic is duplicated in pair-based scenarios above
@@ -135,85 +127,132 @@ public class CardUtils {
                 if (suitedCards.size() > 4) {
                     if (straightCards != null && straightCards.containsAll(suitedCards)) {
                         if (Collections.max(straightCards).rank == ACE) {
-                            return new Pair<>(ROYAL_FLUSH, getTopCards(straightCards, 5));
+                            return ROYAL_FLUSH;
                         } else {
-                            return new Pair<>(STRAIGHT_FLUSH, getTopCards(straightCards, 5));
+                            return STRAIGHT_FLUSH;
                         }
                     } else {
-                        return new Pair<>(FLUSH, getTopCards(suitedCards, 5));
+                        return FLUSH;
                     }
                 }
             }
             if (straightCards != null && straightCards.size() > 4) {
-                //TODO: Unknown false positives on this.
-                return new Pair<>(STRAIGHT, getTopCards(straightCards, 5));
+                return STRAIGHT;
             }
             bestCards = getTopCards(board, 5);
-            return new Pair<>(HIGH_CARD, bestCards);
+            return HIGH_CARD;
         }
 
     }
 
-    public static String handSpecificity(Pair<Hand, List<Card>> hand) {
+    public static String handSpecificity(Hand hand, List<Card> cards) {
+        return handSpecificity(hand, cards, false);
+    }
 
-        Hand name = hand.getValue0();
-        List<Card> cards = hand.getValue1();
+    public static String handSpecificity(Hand hand, List<Card> cards, boolean additionalInfo) {
 
-        switch (name) {
+        switch (hand) {
             case HIGH_CARD -> {
                 if (cards.stream().max(Comparator.naturalOrder()).isPresent()) {
-                    return " " + cards.stream().max(Comparator.naturalOrder()).get().rank.name;
-                    //TODO: Aces not recognising as high cards - hoping this doesn't affect hand rankings too - may be worth making a custom poker card/Hand Comparator
-                }
+                    return ": " + cards.stream().max(Comparator.naturalOrder()).get().rank.name;
+                    }
             }
             case ONE_PAIR, THREE_OF_A_KIND, FOUR_OF_A_KIND, FIVE_OF_A_KIND -> {
-                List<Rank> ranks = hand.getValue1().stream().map(Card::getRank).collect(toList());
+                List<Rank> ranks = cards.stream().map(Card::getRank).collect(toList());
                 HashSet<Rank> rankSet = new HashSet<>(ranks);
+                List<Rank> remainingRanks = new ArrayList<>();
+                String result = "";
 
                 for (Rank rank : ranks) {
-                    if (!rankSet.add(rank)) {
-                        return rank.name.equals("Two") ? ", Deuces" : ", " + rank.name + "s";
+                    if (!rankSet.remove(rank)) {
+                        result = rank.name.equals("Two") ? ": Deuces" : ": " + rank.name + "s";
+                        if (!additionalInfo) return result;
+                    } else if (additionalInfo) {
+                        remainingRanks.add(rank);
+                    }
+                }
+                if (additionalInfo) {
+                    if (hand == ONE_PAIR) {return result + " - ";}
+                    int kickerValue;
+                    if (remainingRanks.size() > 0) {
+                        kickerValue = remainingRanks.stream().map(r -> r.value).max(Integer::compareTo).orElse(null);
+                        return result + " - " + (Rank.getByValue(kickerValue) != null ? Objects.requireNonNull(getByValue(kickerValue)).name : null) + " kicker";
                     }
                 }
                 return "NO PAIR FOUND";
             }
             case TWO_PAIR, FULL_HOUSE -> {
 
-                List<Rank> ranks = hand.getValue1().stream().map(Card::getRank).collect(toList());
+                List<Rank> ranks = cards.stream().map(Card::getRank).collect(toList());
                 HashSet<Rank> rankSet = new HashSet<>(ranks);
-                StringBuilder pairs = new StringBuilder(", ");
+                StringBuilder pairs = new StringBuilder(": ");
 
                 int id = 0;
+                boolean first = false;
+                Map<Rank, Integer> rankMap = new HashMap<>();
                 for (Rank rank : ranks) {
                     if (!rankSet.add(rank) && id != rank.id) {
                         id = rank.id;
-                        pairs.append(rank.name).append("s and ");
+                        if (hand == TWO_PAIR) {
+                            pairs.append(id == 2 ? "Deuce" : rank.name);
+                            if (first) {
+                                pairs.append(id == 6 ? "es" : "s");
+                                break;
+                            } else {pairs.append(id == 6 ? "es and " : "s and ");}
+                            first = true;
+                        }
+                        else {
+                            rankMap.put(rank, rankMap.get(rank) == null ? 1 : rankMap.get(rank) + 1);
+                        }
                     }
                 }
-                return pairs.substring(0, pairs.length()-6);
+                if (hand == FULL_HOUSE) {
+                    Rank rank1 = Collections.max(rankMap.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+                    rankMap.remove(rank1);
+                    Rank rank2 = Collections.max(rankMap.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+                    pairs.append(rank2.id == 2 ? "Deuce" : rank2.name).append(rank2.id == 6 ? "es full of " : "s full of ");
+                    pairs.append(rank1.id == 2 ? "Deuce" : rank1.name).append(rank1.id == 6 ? "es" : "s");
+                }
+                return pairs.toString();//pairs.substring(0, pairs.length()-6);
             }
             case STRAIGHT, FLUSH, STRAIGHT_FLUSH, ROYAL_FLUSH -> {
 
-                String specificity = ", ";
+                String specificity = (hand == FLUSH || hand == STRAIGHT_FLUSH) ? ", " : ": ";
 
                 if (cards.stream().max(Comparator.naturalOrder()).isPresent()) {
-                    specificity = specificity + cards.stream().max(Comparator.naturalOrder()).get().rank.name + "-high";
+                    if (hand != FLUSH || additionalInfo) {
+                        Rank highCard = cards.stream().max(Comparator.naturalOrder()).get().rank;
+                        String highCardName = highCard.name;
+                        boolean wheel = false;
+                        if (highCard == ACE) {
+                            wheel = true;
+                            for (Card card : cards) {
+                                if (card.rank == KING) {
+                                    wheel = false;
+                                    break;
+                                }
+                            }
+                        }
+                        specificity = specificity + (wheel ? "Five-high" : highCardName + "-high");
+                    } else {
+                        specificity = "";
+                    }
                 }
 
-                if (name == STRAIGHT) {
+                if (hand == STRAIGHT) {
                     return specificity;
                 } else {
-                    List<Suit> suits = hand.getValue1().stream().map(Card::getSuit).collect(toList());
+                    List<Suit> suits = cards.stream().map(Card::getSuit).collect(toList());
                     String suitName = "";
                     int frequency = 0;
                     for (Suit suit : Suit.values()) {
                         int count = Collections.frequency(suits, suit);
                         if (count > frequency) {
                             frequency = count;
-                            suitName = suit.name;
+                            suitName = ": " + suit.name;
                         }
                     }
-                    if (name == ROYAL_FLUSH) {
+                    if (hand == ROYAL_FLUSH) {
                         return suitName;
                     } else {
                         return suitName + specificity;
@@ -236,7 +275,7 @@ public class CardUtils {
                 .max(Map.Entry.comparingByValue())
                 .ifPresent(mostCommonRank::set);
 
-        System.out.println(mostCommonRank);
+//        System.out.println(mostCommonRank);
 
         switch (mostCommonRank.get().getValue().intValue()) {
             case 2 -> {return new Pair<>(ONE_PAIR, mostCommonRank.get().getKey());}
@@ -256,9 +295,7 @@ public class CardUtils {
             List<Card> cardsAbove;
 
             // Wheel logic
-            //TODO: This seems to override logic for ace-high straights
-            if (rank == ACE) cardsAbove = getCardsAbove(hand, ONE);
-            else cardsAbove = getCardsAbove(hand, rank);
+            cardsAbove = getCardsAbove(hand, rank);
 
             while (!cardsAbove.isEmpty()) {
                 straight.addAll(cardsAbove);
@@ -272,6 +309,28 @@ public class CardUtils {
         }
 
         return null;
+
+    }
+
+    public static String highCardSpecificity(List<Card> hand1, List<Card> hand2, boolean pair) {
+
+        if (hand1.size() < 1 || hand2.size() < 1) {return "";}
+
+        List<Integer> hand1Values = hand1.stream().map(o -> o.rank.value).collect(toList());
+        List<Integer> hand2Values = hand2.stream().map(o -> o.rank.value).collect(toList());
+        List<Integer> duplicateValues = new ArrayList<>();
+        for (Integer value : hand1Values) if (hand2Values.contains(value)) duplicateValues.add(value);
+        for (Integer duplicate : duplicateValues) {
+            hand1Values.remove(duplicate);
+            hand2Values.remove(duplicate);
+        }
+        if (hand1Values.size() < 1 || hand2Values.size() < 1) {return "";}
+        int card1 = hand1Values.stream().max(Comparator.naturalOrder()).orElse(null);
+        int card2 = hand2Values.stream().max(Comparator.naturalOrder()).orElse(null);
+
+        if (pair) {return (card1 > card2 ? Objects.requireNonNull(getByValue(card1)).name : Objects.requireNonNull(getByValue(card2)).name) + " kicker";}
+
+        return "high card: " + (card1 > card2 ? Objects.requireNonNull(getByValue(card1)).name : Objects.requireNonNull(getByValue(card2)).name);
 
     }
 
