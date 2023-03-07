@@ -1,7 +1,8 @@
-package pokerhands.handgenerator;
+package pokerhands.handgenerator.cards;
 
 import lombok.Getter;
 import org.javatuples.Pair;
+import pokerhands.handgenerator.utils.CardUtils;
 
 import java.util.Map;
 

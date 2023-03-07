@@ -1,4 +1,4 @@
-package pokerhands.handgenerator;
+package pokerhands.handgenerator.cards;
 
 public enum Suit {
 

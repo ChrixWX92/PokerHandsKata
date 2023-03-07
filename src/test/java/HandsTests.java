@@ -1,17 +1,17 @@
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pokerhands.Main;
-import pokerhands.handgenerator.Card;
-import pokerhands.handgenerator.Deck;
-import pokerhands.handgenerator.Rank;
-import pokerhands.handgenerator.Suit;
+import pokerhands.handgenerator.cards.Card;
+import pokerhands.handgenerator.cards.Deck;
+import pokerhands.handgenerator.cards.Rank;
+import pokerhands.handgenerator.cards.Suit;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static pokerhands.handgenerator.Rank.*;
-import static pokerhands.handgenerator.Suit.*;
+import static pokerhands.handgenerator.cards.Rank.*;
+import static pokerhands.handgenerator.cards.Suit.*;
 
 class HandsTests {
 
@@ -193,6 +193,13 @@ class HandsTests {
     }
 
     @Test
+    void checkFullHouseVsFullHouse() {
+        List<Card> hand1 = List.of(new Card(TWO, SPADES), new Card(TWO, DIAMONDS), new Card(FOUR, HEARTS), new Card(FOUR, SPADES), new Card(FOUR, DIAMONDS));
+        List<Card> hand2 = List.of(new Card(THREE, CLUBS), new Card(SIX, CLUBS), new Card(SIX, DIAMONDS), new Card(SIX, HEARTS), new Card(THREE, DIAMONDS));
+        assertEquals("White wins. - with full house: 6s full of 3s", Main.handResult(hand1, hand2));
+    }
+
+    @Test
     void checkStraightFlushVsRoyalFlush() {
         // Straight Flush
         List<Card> hand1 = List.of(new Card(FIVE, CLUBS), new Card(SIX, CLUBS), new Card(SEVEN, CLUBS), new Card(EIGHT, CLUBS), new Card(NINE, CLUBS));
@@ -247,14 +254,14 @@ class HandsTests {
     void checkTiedPairsKickerPlays() {
         List<Card> hand1 = List.of(new Card(QUEEN, DIAMONDS), new Card(THREE, SPADES), new Card(EIGHT, SPADES), new Card(SEVEN, CLUBS), new Card(EIGHT, DIAMONDS));
         List<Card> hand2 = List.of(new Card(FOUR, HEARTS), new Card(JACK, HEARTS), new Card(EIGHT, HEARTS), new Card(EIGHT, CLUBS), new Card(TEN, DIAMONDS));
-        assertEquals("Black wins. - with one pair: Eights - Queen kicker", Main.handResult(hand1, hand2));
+        assertEquals("Black wins. - with one pair: 8s - Queen kicker", Main.handResult(hand1, hand2));
     }
 
     @Test
     void checkTiedPairsLastKickerPlays() {
         List<Card> hand1 = List.of(new Card(QUEEN, DIAMONDS), new Card(THREE, SPADES), new Card(EIGHT, SPADES), new Card(TEN, CLUBS), new Card(EIGHT, DIAMONDS));
         List<Card> hand2 = List.of(new Card(FOUR, HEARTS), new Card(QUEEN, HEARTS), new Card(EIGHT, HEARTS), new Card(EIGHT, CLUBS), new Card(TEN, DIAMONDS));
-        assertEquals("White wins. - with one pair: Eights - 4 kicker", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with one pair: 8s - 4 kicker", Main.handResult(hand1, hand2));
     }
 
     @Test

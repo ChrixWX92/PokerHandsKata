@@ -1,4 +1,4 @@
-package pokerhands.handgenerator;
+package pokerhands.handgenerator.cards;
 
 import lombok.Getter;
 import lombok.Setter;
