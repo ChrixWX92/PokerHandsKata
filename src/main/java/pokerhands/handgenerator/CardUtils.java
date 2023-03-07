@@ -14,6 +14,8 @@ import static pokerhands.handgenerator.Rank.*;
 
 public class CardUtils {
 
+    public static boolean numbersNotWords;
+
     /** Five-digit unicode values are determined via surrogate pairs, the fist of the pair is below, the second is an instance variable of the Suit object - codepointStub**/
     private static final String surrogateFirst = "\uD83C";
 
@@ -348,7 +350,8 @@ public class CardUtils {
         return hand.stream().sorted(Comparator.reverseOrder()).limit(number).collect(Collectors.toList());
     }
 
-    private static String rankNameToNumber(Rank rank) {
+    private static String calculateRankName(Rank rank) {
+        if (!numbersNotWords) {return rank.name;}
         if (rank.value < 9) {return Character.toString(rank.character);}
         else if (rank == TEN) return "10";
         else return rank.name;

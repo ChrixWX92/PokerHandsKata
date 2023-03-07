@@ -19,6 +19,8 @@ public class Main {
 
 //        randomHand();
 
+        CardUtils.numbersNotWords = true;
+
         terminalHand();
 
     }
