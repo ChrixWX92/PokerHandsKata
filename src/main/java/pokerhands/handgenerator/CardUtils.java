@@ -353,7 +353,7 @@ public class CardUtils {
         else if (rank == TEN) return "10";
         else return rank.name;
     }
-    
+
     public enum Hand {
         FIVE_OF_A_KIND(11, "Five of a kind"),
         ROYAL_FLUSH(10, "Royal flush"),

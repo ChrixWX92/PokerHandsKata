@@ -56,7 +56,7 @@ class HandsTests {
         List<Card> hand1 = List.of(new Card(NINE, HEARTS), new Card(THREE, SPADES), new Card(JACK, SPADES), new Card(TWO, HEARTS), new Card(SEVEN, CLUBS));
         // One Pair
         List<Card> hand2 = List.of(new Card(SEVEN, DIAMONDS), new Card(THREE, DIAMONDS), new Card(ACE, HEARTS), new Card(FOUR, DIAMONDS), new Card(THREE, CLUBS));
-        assertEquals("White wins. - with one pair: Threes", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with one pair: 3s", Main.handResult(hand1, hand2));
     }
     
     @Test
@@ -65,7 +65,7 @@ class HandsTests {
         List<Card> hand1 = List.of(new Card(TWO, SPADES), new Card(THREE, SPADES), new Card(JACK, SPADES), new Card(TWO, HEARTS), new Card(SEVEN, SPADES));
         // Two Pair
         List<Card> hand2 = List.of(new Card(SEVEN, DIAMONDS), new Card(THREE, DIAMONDS), new Card(SEVEN, HEARTS), new Card(FOUR, DIAMONDS), new Card(THREE, CLUBS));
-        assertEquals("White wins. - with two pair: Sevens and Threes", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with two pair: 7s and 3s", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -83,7 +83,7 @@ class HandsTests {
         List<Card> hand1 = List.of(new Card(SIX, SPADES), new Card(TWO, SPADES), new Card(JACK, SPADES), new Card(SIX, HEARTS), new Card(TWO, DIAMONDS));
         // High Card
         List<Card> hand2 = List.of(new Card(NINE, HEARTS), new Card(THREE, SPADES), new Card(JACK, SPADES), new Card(TWO, HEARTS), new Card(SEVEN, CLUBS));;
-        assertEquals("Black wins. - with two pair: Sixes and Deuces", Main.handResult(hand1, hand2));
+        assertEquals("Black wins. - with two pair: 6s and 2s", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -92,7 +92,7 @@ class HandsTests {
         List<Card> hand1 = List.of(new Card(ACE, SPADES), new Card(ACE, DIAMONDS), new Card(ACE, HEARTS), new Card(TWO, HEARTS), new Card(THREE, DIAMONDS));
         // Straight
         List<Card> hand2 = List.of(new Card(FIVE, DIAMONDS), new Card(SIX, CLUBS), new Card(SEVEN, CLUBS), new Card(EIGHT, HEARTS), new Card(NINE, HEARTS));
-        assertEquals("White wins. - with straight: Nine-high", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with straight: 9-high", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -101,7 +101,7 @@ class HandsTests {
         List<Card> hand1 = List.of(new Card(ACE, SPADES), new Card(TWO, DIAMONDS), new Card(THREE, HEARTS), new Card(FOUR, HEARTS), new Card(FIVE, DIAMONDS));
         // Trips
         List<Card> hand2 = List.of(new Card(ACE, HEARTS), new Card(ACE, DIAMONDS), new Card(ACE, CLUBS), new Card(TWO, HEARTS), new Card(THREE, DIAMONDS));
-        assertEquals("Black wins. - with straight: Five-high", Main.handResult(hand1, hand2));
+        assertEquals("Black wins. - with straight: 5-high", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -110,7 +110,7 @@ class HandsTests {
         List<Card> hand1 = List.of(new Card(ACE, SPADES), new Card(TWO, DIAMONDS), new Card(THREE, HEARTS), new Card(FOUR, HEARTS), new Card(FIVE, DIAMONDS));
         // Straight
         List<Card> hand2 = List.of(new Card(SIX, HEARTS), new Card(TWO, HEARTS), new Card(THREE, DIAMONDS), new Card(FOUR, CLUBS), new Card(FIVE, CLUBS));
-        assertEquals("White wins. - with straight: Six-high", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with straight: 6-high", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -171,7 +171,7 @@ class HandsTests {
     void checkStraightsDoNotWrapAround() {
         List<Card> hand1 = List.of(new Card(JACK, SPADES), new Card(QUEEN, DIAMONDS), new Card(KING, HEARTS), new Card(ACE, HEARTS), new Card(TWO, DIAMONDS));
         List<Card> hand2 = List.of(new Card(QUEEN, HEARTS), new Card(TWO, HEARTS), new Card(KING, DIAMONDS), new Card(ACE, CLUBS), new Card(TWO, CLUBS));
-        assertEquals("White wins. - with one pair: Deuces", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with one pair: 2s", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -180,7 +180,7 @@ class HandsTests {
         List<Card> hand1 = List.of(new Card(TWO, HEARTS), new Card(THREE, HEARTS), new Card(FOUR, HEARTS), new Card(FIVE, HEARTS), new Card(SEVEN, HEARTS));
         // Full House
         List<Card> hand2 = List.of(new Card(FIVE, CLUBS), new Card(SIX, CLUBS), new Card(FIVE, DIAMONDS), new Card(SIX, SPADES), new Card(SIX, HEARTS));
-        assertEquals("White wins. - with full house: Sixes full of Fives", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with full house: 6s full of 5s", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -189,7 +189,7 @@ class HandsTests {
         List<Card> hand1 = List.of(new Card(TWO, SPADES), new Card(TWO, DIAMONDS), new Card(FOUR, HEARTS), new Card(FOUR, SPADES), new Card(FOUR, DIAMONDS));
         // Straight Flush
         List<Card> hand2 = List.of(new Card(FIVE, CLUBS), new Card(SIX, CLUBS), new Card(SEVEN, CLUBS), new Card(EIGHT, CLUBS), new Card(NINE, CLUBS));
-        assertEquals("White wins. - with straight flush: Clubs, Nine-high", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with straight flush: Clubs, 9-high", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -219,7 +219,7 @@ class HandsTests {
     void checkHighCardFinalCard() {
         List<Card> hand1 = List.of(new Card(ACE, DIAMONDS), new Card(KING, SPADES), new Card(QUEEN, SPADES), new Card(JACK, CLUBS), new Card(NINE, DIAMONDS));
         List<Card> hand2 = List.of(new Card(ACE, HEARTS), new Card(KING, HEARTS), new Card(QUEEN, HEARTS), new Card(JACK, HEARTS), new Card(EIGHT, DIAMONDS));
-        assertEquals("Black wins. - with high card: Nine", Main.handResult(hand1, hand2));
+        assertEquals("Black wins. - with high card: 9", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -233,7 +233,7 @@ class HandsTests {
     void checkPairVsPair() {
         List<Card> hand1 = List.of(new Card(QUEEN, DIAMONDS), new Card(THREE, SPADES), new Card(EIGHT, SPADES), new Card(SEVEN, CLUBS), new Card(EIGHT, DIAMONDS));
         List<Card> hand2 = List.of(new Card(TEN, HEARTS), new Card(JACK, HEARTS), new Card(TWO, HEARTS), new Card(FIVE, HEARTS), new Card(TEN, DIAMONDS));
-        assertEquals("White wins. - with one pair: Tens", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with one pair: 10s", Main.handResult(hand1, hand2));
     }
 
     @Test
@@ -254,14 +254,14 @@ class HandsTests {
     void checkTiedPairsLastKickerPlays() {
         List<Card> hand1 = List.of(new Card(QUEEN, DIAMONDS), new Card(THREE, SPADES), new Card(EIGHT, SPADES), new Card(TEN, CLUBS), new Card(EIGHT, DIAMONDS));
         List<Card> hand2 = List.of(new Card(FOUR, HEARTS), new Card(QUEEN, HEARTS), new Card(EIGHT, HEARTS), new Card(EIGHT, CLUBS), new Card(TEN, DIAMONDS));
-        assertEquals("White wins. - with one pair: Eights - Four kicker", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with one pair: Eights - 4 kicker", Main.handResult(hand1, hand2));
     }
 
     @Test
     void checkTripsVsTrips() {
         List<Card> hand1 = List.of(new Card(QUEEN, DIAMONDS), new Card(THREE, SPADES), new Card(EIGHT, SPADES), new Card(EIGHT, CLUBS), new Card(EIGHT, DIAMONDS));
         List<Card> hand2 = List.of(new Card(TEN, HEARTS), new Card(JACK, HEARTS), new Card(TWO, HEARTS), new Card(TEN, HEARTS), new Card(TEN, DIAMONDS));
-        assertEquals("White wins. - with three of a kind: Tens", Main.handResult(hand1, hand2));
+        assertEquals("White wins. - with three of a kind: 10s", Main.handResult(hand1, hand2));
     }
 
 
